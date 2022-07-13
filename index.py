@@ -3,7 +3,6 @@ from dash import html
 from dash import Input, Output
 
 from app import app
-
 from apps import pg_descriptive_analysis, pg_exams_results_analysis
 
 app.layout = html.Div([
