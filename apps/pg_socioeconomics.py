@@ -22,17 +22,30 @@ dropdown_centros = df_form3.redcap_data_access_group.unique().tolist()
 dropdown_centros.insert(0, "Todos")
 
 layout = html.Div([
-    dcc.Dropdown(
-        dropdown_centros,
-        id='selected-centers'
-    ),
-    dcc.Graph(
-        id='graph-two',
-    )
+    html.Div([
+        html.H1(children='Gênero'),
+        dcc.Dropdown(
+            dropdown_centros,
+            id='selected-centers'
+        ),
+        dcc.Graph(
+            id='gender-graph',
+        )
+    ]),
+    html.Div([
+        html.H1(children='Cor da Pele'),
+        dcc.Dropdown(
+            dropdown_centros,
+            id='selected-centers-skin-color'
+        ),
+        dcc.Graph(
+            id='skin-color'
+        )
+    ])
 ])
 
 @app.callback(
-    Output('graph-two', 'figure'),
+    Output('gender-graph', 'figure'),
     Input('selected-centers', 'value'))
 def update_graph_genders(selected_centers):
 
@@ -46,6 +59,26 @@ def update_graph_genders(selected_centers):
     else:
         fig = px.histogram(df_form3[df_form3.redcap_data_access_group==selected_centers],
                         x="genero",
+                        color="redcap_data_access_group",
+                        barmode="group",
+                        text_auto=True)
+        return fig
+
+@app.callback(
+    Output('skin-color', 'figure'),
+    Input('selected-centers-skin-color', 'value'))
+def update_skin_color_graph(selected_centers):
+
+    if (selected_centers == None) or ("Todos" in selected_centers):
+        fig = px.histogram(df_form3,
+                    x='cor_pele', 
+                    color="redcap_data_access_group",
+                    barmode="group",
+                    text_auto=True)
+        return fig
+    else:
+        fig = px.histogram(df_form3[df_form3.redcap_data_access_group==selected_centers],
+                        x='cor_pele', 
                         color="redcap_data_access_group",
                         barmode="group",
                         text_auto=True)
