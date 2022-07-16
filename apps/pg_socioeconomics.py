@@ -5,6 +5,7 @@ import plotly.express as px
 import pathlib
 import pandas as pd
 
+from apps.plot_functions import *
 from app import app
 
 PATH = pathlib.Path(__file__).parent
@@ -41,6 +42,26 @@ layout = html.Div([
         dcc.Graph(
             id='skin-color'
         )
+    ]),
+    html.Div([
+        html.H1(children='Altura'),
+        dcc.Dropdown(
+            dropdown_centros,
+            id='selected-centers-height'
+        ),
+        dcc.Graph(
+            id='height'
+        )
+    ]),
+    html.Div([
+        html.H1(children='Peso'),
+        dcc.Dropdown(
+            dropdown_centros,
+            id='selected-centers-weight'
+        ),
+        dcc.Graph(
+            id='weight'
+        )
     ])
 ])
 
@@ -49,37 +70,25 @@ layout = html.Div([
     Input('selected-centers', 'value'))
 def update_graph_genders(selected_centers):
 
-    if (selected_centers == None) or ("Todos" in selected_centers):
-        fig = px.histogram(df_form3,
-                    x="genero",
-                    color="redcap_data_access_group",
-                    barmode="group",
-                    text_auto=True)
-        return fig
-    else:
-        fig = px.histogram(df_form3[df_form3.redcap_data_access_group==selected_centers],
-                        x="genero",
-                        color="redcap_data_access_group",
-                        barmode="group",
-                        text_auto=True)
-        return fig
+    return histogram_plot_function(df_form3, "genero", filter_option=selected_centers)
 
 @app.callback(
     Output('skin-color', 'figure'),
     Input('selected-centers-skin-color', 'value'))
 def update_skin_color_graph(selected_centers):
 
-    if (selected_centers == None) or ("Todos" in selected_centers):
-        fig = px.histogram(df_form3,
-                    x='cor_pele', 
-                    color="redcap_data_access_group",
-                    barmode="group",
-                    text_auto=True)
-        return fig
-    else:
-        fig = px.histogram(df_form3[df_form3.redcap_data_access_group==selected_centers],
-                        x='cor_pele', 
-                        color="redcap_data_access_group",
-                        barmode="group",
-                        text_auto=True)
-        return fig
+    return histogram_plot_function(df_form3, "cor_pele", filter_option=selected_centers)
+
+@app.callback(
+    Output('height', 'figure'),
+    Input('selected-centers-height', 'value'))
+def update_skin_color_graph(selected_centers):
+
+    return histogram_plot_function(df_form3, "altura", filter_option=selected_centers)
+
+@app.callback(
+    Output('weight', 'figure'),
+    Input('selected-centers-weight', 'value'))
+def update_skin_color_graph(selected_centers):
+
+    return weight_histogram_plot_function(df_form3, "peso", filter_option=selected_centers) 
